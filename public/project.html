@@ -3,92 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project</title>
+    <title>Project Management</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --error: #ef4444;
+            --success: #22c55e;
+        }
+
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f0f2f5;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
             padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 25%);
         }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
         h1 {
-            color: #24292e;
-            margin: 0;
+            font-size: 1.875rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .bolt-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #0066cc;
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--primary);
             color: white;
-            text-decoration: none;
-            border-radius: 4px;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn-return {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-return:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 2rem;
         }
-        .bolt-button:hover {
-            background-color: #0052a3;
-        }
-        .return-link {
-            display: inline-block;
-            padding: 10px 20px;
-            color: #0066cc;
-            text-decoration: none;
-            margin-bottom: 2rem;
-            margin-right: 1rem;
-        }
-        .return-link:hover {
-            text-decoration: underline;
-        }
+
         .form-group {
             margin-bottom: 1.5rem;
         }
-        label {
+
+        .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: bold;
+            color: var(--text-muted);
+            font-size: 0.875rem;
         }
-        input[type="file"],
-        textarea {
+
+        .form-control {
             width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.2s;
         }
-        textarea {
-            min-height: 150px;
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 100px;
             resize: vertical;
         }
-        button[type="submit"] {
-            padding: 10px 20px;
-            background-color: #2ea44f;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            display: none;
         }
-        button[type="submit"]:hover {
-            background-color: #2c974b;
+
+        .loading.active {
+            display: flex;
         }
-        .error {
-            color: red;
-            margin-top: 1rem;
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
         }
-        .success {
-            color: green;
-            margin-top: 1rem;
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #message {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        #message.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            display: block;
+        }
+
+        #message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: block;
         }
     </style>
 </head>
@@ -96,52 +205,79 @@
     <div class="container">
         <div class="header">
             <h1 id="repo-name">Loading...</h1>
+            <div class="header-actions">
+                <button class="btn btn-return" onclick="returnToDashboard()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                        <path d="M10 12L6 8L10 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Return
+                </button>
+                <button class="btn btn-primary" onclick="openInBoltNew()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                        <path d="M10 2H6C3.79086 2 2 3.79086 2 6V10C2 12.2091 3.79086 14 6 14H10C12.2091 14 14 12.2091 14 10V6C14 3.79086 12.2091 2 10 2Z" stroke-width="1.5"/>
+                        <path d="M8 5V11M5 8H11" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Open in Bolt.new
+                </button>
+                <button class="btn btn-danger" onclick="logout()">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                        <path d="M6 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V3.33333C2 2.97971 2.14048 2.64057 2.39052 2.39052C2.64057 2.14048 2.97971 2 3.33333 2H6M10.6667 11.3333L14 8M14 8L10.6667 4.66667M14 8H6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Logout
+                </button>
+            </div>
         </div>
-        
-        <a href="/dashboard" class="return-link">← Return to Dashboard</a>
-        <a id="bolt-link" href="#" target="_blank" class="bolt-button">Open in Bolt.new</a>
-        
-        <form id="updateForm">
-            <div class="form-group">
-                <label for="file">File (ZIP only)</label>
-                <input type="file" id="file" name="file" accept=".zip" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="changes">Changes</label>
-                <textarea id="changes" name="changes" required></textarea>
-            </div>
-            
-            <button type="submit">Submit Changes</button>
-        </form>
-        
+
         <div id="message"></div>
+
+        <div class="card">
+            <form id="updateForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="file">Repository Update File (ZIP)</label>
+                    <input type="file" id="file" name="file" accept=".zip" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="changes">Commit Message</label>
+                    <textarea id="changes" name="changes" class="form-control" required placeholder="Describe your changes..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Repository</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
     </div>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const repoName = params.get('name');
-        const repoUrl = params.get('url');
+        const urlParams = new URLSearchParams(window.location.search);
+        const repoName = urlParams.get('repo');
+        const repoUrl = urlParams.get('url');
         
-        if (repoName && repoUrl) {
-            document.getElementById('repo-name').textContent = repoName;
-            const boltUrl = `https://bolt.new/~/${repoUrl.replace('https://', '')}`;
-            document.getElementById('bolt-link').href = boltUrl;
-        } else {
-            window.location.href = '/dashboard';
+        document.getElementById('repo-name').textContent = repoName || 'Repository';
+        document.title = `${repoName || 'Repository'} - Project Management`;
+
+        function showLoading(show = true) {
+            document.getElementById('loading').classList.toggle('active', show);
         }
 
-        document.getElementById('updateForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const messageDiv = document.getElementById('message');
-            messageDiv.className = '';
-            messageDiv.textContent = '';
+        function showMessage(message, type = 'success') {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = message;
+            messageEl.className = type;
+            setTimeout(() => {
+                messageEl.className = '';
+                messageEl.textContent = '';
+            }, 5000);
+        }
 
-            const formData = new FormData();
-            formData.append('file', document.getElementById('file').files[0]);
-            formData.append('changes', document.getElementById('changes').value);
+        async function handleSubmit(event) {
+            event.preventDefault();
+            showLoading(true);
+
+            const form = event.target;
+            const formData = new FormData(form);
             formData.append('repoName', repoName);
-            formData.append('repoUrl', repoUrl);
 
             try {
                 const response = await fetch('/api/update-repo', {
@@ -149,21 +285,48 @@
                     body: formData
                 });
 
-                const result = await response.json();
-                
+                const data = await response.json();
+
                 if (response.ok) {
-                    messageDiv.className = 'success';
-                    messageDiv.textContent = 'Changes submitted successfully!';
-                    document.getElementById('updateForm').reset();
+                    showMessage(data.message);
+                    form.reset();
                 } else {
-                    messageDiv.className = 'error';
-                    messageDiv.textContent = result.message || 'An error occurred';
+                    throw new Error(data.message || 'Failed to update repository');
                 }
             } catch (error) {
-                messageDiv.className = 'error';
-                messageDiv.textContent = 'An error occurred while submitting changes';
+                showMessage(error.message, 'error');
+            } finally {
+                showLoading(false);
             }
-        });
+        }
+
+        function openInBoltNew() {
+            if (repoUrl) {
+                window.open(`https://bolt.new/~/${repoUrl}`, '_blank');
+            }
+        }
+
+        function returnToDashboard() {
+            window.location.href = '/dashboard';
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch('/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        }
     </script>
 </body>
 </html>
