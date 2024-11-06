@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            color: #24292e;
+            margin: 0;
+        }
+        .bolt-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+        .bolt-button:hover {
+            background-color: #0052a3;
+        }
+        .return-link {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #0066cc;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            margin-right: 1rem;
+        }
+        .return-link:hover {
+            text-decoration: underline;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #2ea44f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover {
+            background-color: #2c974b;
+        }
+        .error {
+            color: red;
+            margin-top: 1rem;
+        }
+        .success {
+            color: green;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="repo-name">Loading...</h1>
+        </div>
+        
+        <a href="/dashboard" class="return-link">← Return to Dashboard</a>
+        <a id="bolt-link" href="#" target="_blank" class="bolt-button">Open in Bolt.new</a>
+        
+        <form id="updateForm">
+            <div class="form-group">
+                <label for="file">File (ZIP only)</label>
+                <input type="file" id="file" name="file" accept=".zip" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="changes">Changes</label>
+                <textarea id="changes" name="changes" required></textarea>
+            </div>
+            
+            <button type="submit">Submit Changes</button>
+        </form>
+        
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const repoName = params.get('name');
+        const repoUrl = params.get('url');
+        
+        if (repoName && repoUrl) {
+            document.getElementById('repo-name').textContent = repoName;
+            const boltUrl = `https://bolt.new/~/${repoUrl.replace('https://', '')}`;
+            document.getElementById('bolt-link').href = boltUrl;
+        } else {
+            window.location.href = '/dashboard';
+        }
+
+        document.getElementById('updateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = '';
+            messageDiv.textContent = '';
+
+            const formData = new FormData();
+            formData.append('file', document.getElementById('file').files[0]);
+            formData.append('changes', document.getElementById('changes').value);
+            formData.append('repoName', repoName);
+            formData.append('repoUrl', repoUrl);
+
+            try {
+                const response = await fetch('/api/update-repo', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.className = 'success';
+                    messageDiv.textContent = 'Changes submitted successfully!';
+                    document.getElementById('updateForm').reset();
+                } else {
+                    messageDiv.className = 'error';
+                    messageDiv.textContent = result.message || 'An error occurred';
+                }
+            } catch (error) {
+                messageDiv.className = 'error';
+                messageDiv.textContent = 'An error occurred while submitting changes';
+            }
+        });
+    </script>
+</body>
+</html>
